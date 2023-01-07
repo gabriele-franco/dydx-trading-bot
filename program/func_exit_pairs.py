@@ -9,8 +9,6 @@ from func_messaging import send_message
 
 from pprint import pprint
 
-from program.func_messaging import send_message
-
 # Manage trade exits
 def manage_trade_exits(client):
 

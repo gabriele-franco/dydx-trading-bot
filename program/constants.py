@@ -7,7 +7,7 @@ MODE = "DEVELOPMENT"
 
 #Close all position in DYDX
 
-ABORT_ALL_POSITIONS= True 
+ABORT_ALL_POSITIONS= False 
 
 # Find Cointegrated pairs
 FIND_COINTEGRATED= True 

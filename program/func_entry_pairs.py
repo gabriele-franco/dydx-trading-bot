@@ -125,6 +125,7 @@ def open_positions(client):
               hedge_ratio=hedge_ratio
             )
 
+
             # Open Trades
             bot_open_dict = bot_agent.open_trades()
 

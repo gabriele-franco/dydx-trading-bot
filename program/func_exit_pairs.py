@@ -5,8 +5,11 @@ from func_cointegration import calculate_zscore
 from func_private import place_market_order
 import json
 import time
+from func_messaging import send_message
 
 from pprint import pprint
+
+from program.func_messaging import send_message
 
 # Manage trade exits
 def manage_trade_exits(client):
@@ -162,6 +165,7 @@ def manage_trade_exits(client):
         )
 
         print(close_order_m1["order"]["id"])
+        send_message(f'closing order{close_order_m1["order"]["id"]}')
         print(">>> Closing <<<")
 
         # Protect API
@@ -181,6 +185,7 @@ def manage_trade_exits(client):
         )
 
         print(close_order_m2["order"]["id"])
+        send_message(f'closing order{close_order_m2["order"]["id"]}')
         print(">>> Closing <<<")
 
       except Exception as e:

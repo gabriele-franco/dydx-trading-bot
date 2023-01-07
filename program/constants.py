@@ -7,10 +7,13 @@ MODE = "DEVELOPMENT"
 
 #Close all position in DYDX
 
-ABORT_ALL_POSITIONS= False 
+ABORT_ALL_POSITIONS= True 
 
 # Find Cointegrated pairs
 FIND_COINTEGRATED= True 
+
+#PLACE Exits
+MANAGE_EXITS=True
 
 #PLACE Trades
 PLACE_TRADES=True

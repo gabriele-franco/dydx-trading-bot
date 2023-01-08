@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 #from func_messaging import send_message
 import time
 from func_messaging import send_message
-
 from pprint import pprint
 
 
@@ -90,6 +89,7 @@ class BotAgent:
       # Guard: If order cancelled move onto next Pair
       if order_status == "CANCELED":
         print(f"{self.market_1} vs {self.market_2} - Order cancelled...")
+        send_message(f"{self.market_1} vs {self.market_2} - Order cancelled...")
         self.order_dict["pair_status"] = "FAILED"
         return "failed"
 
@@ -98,6 +98,7 @@ class BotAgent:
         self.client.private.cancel_order(order_id=order_id)
         self.order_dict["pair_status"] = "ERROR"
         print(f"{self.market_1} vs {self.market_2} - Order error...")
+        send_message(f"{self.market_1} vs {self.market_2} - Order error...")
         return "error"
 
     # Return live
@@ -110,6 +111,8 @@ class BotAgent:
     print("---")
     print(f"{self.market_1}: Placing first order...")
     print(f"Side: {self.base_side}, Size: {self.base_size}, Price: {self.base_price}")
+    send_message(f"{self.market_1}: Placing first order...")
+    send_message(f"Side: {self.base_side}, Size: {self.base_size}, Price: {self.base_price}")
     print("---")
 
     # Place Base Order
@@ -144,6 +147,8 @@ class BotAgent:
     print("---")
     print(f"{self.market_2}: Placing second order...")
     print(f"Side: {self.quote_side}, Size: {self.quote_size}, Price: {self.quote_price}")
+    send_message(f"{self.market_2}: Placing second order...")
+    send_message(f"Side: {self.quote_side}, Size: {self.quote_size}, Price: {self.quote_price}")
     print("---")
 
     # Place Quote Order
@@ -191,10 +196,11 @@ class BotAgent:
           print("ABORT PROGRAM")
           print("Unexpected Error")
           print(order_status_close_order)
+          send_message(f'Unexpected error 100, {order_status_close_order}')
 
           # Send Message
           #send_message("Failed to execute. Code red. Error code: 100")
-          send_message("Failed to execute, Code Red. Error code 100")
+
           # ABORT
           exit(1)
       except Exception as e:
@@ -206,7 +212,7 @@ class BotAgent:
 
         # Send Message
         #send_message("Failed to execute. Code red. Error code: 101")
-        send_message("Failed to execute, Code Red Error code 101")
+        send_message(f'Unexpected error 101, {order_status_close_order}')
 
         # ABORT
         exit(1)

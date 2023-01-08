@@ -2,7 +2,7 @@ from numpy import True_
 from regex import E
 from func_connection import connect_dydx
 from constants import ABORT_ALL_POSITIONS, FIND_COINTEGRATED, PLACE_TRADES, MANAGE_EXITS
-from func_private import abort_all_positions, place_market_order
+from func_private import abort_all_positions
 from func_public import construct_market_prices
 from func_cointegration import store_cointegration_results
 from func_exit_pairs import manage_trade_exits

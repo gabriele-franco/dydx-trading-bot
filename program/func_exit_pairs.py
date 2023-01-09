@@ -84,6 +84,7 @@ def manage_trade_exits(client):
     # Guard: If not all match exit with error
     if not check_m1 or not check_m2 or not check_live:
       print(f"Warning: Not all open positions match exchange records for {position_market_m1} and {position_market_m2}")
+      send_message(f"Warning: Not all open positions match exchange records for {position_market_m1} and {position_market_m2}")
       continue
 
     # Get prices
@@ -152,6 +153,7 @@ def manage_trade_exits(client):
         # Close position for market 1
         print(">>> Closing market 1 <<<")
         print(f"Closing position for {position_market_m1}")
+        send_message(f"Closing position for {position_market_m1}")
 
         close_order_m1 = place_market_order(
           client,
@@ -171,6 +173,7 @@ def manage_trade_exits(client):
         # Close position for market 2
         print(">>> Closing market 2 <<<")
         print(f"Closing position for {position_market_m2}")
+        send_message(f"Closing position for {position_market_m2}")
 
         close_order_m2 = place_market_order(
           client,

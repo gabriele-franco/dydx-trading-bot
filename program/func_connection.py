@@ -1,6 +1,7 @@
 from decouple import config
 from dydx3 import  Client
 from web3 import Web3
+from func_messaging import send_message
 from constants import (
     HOST, 
     ETHEREUM_ADDRESS,
@@ -33,6 +34,7 @@ def connect_dydx():
     account= client.private.get_account()
     account_id=account.data["account"]["id"]
     quote_balance= account.data['account']["quoteBalance"]
+    send_message(f'Your balance is {quote_balance}')
     print("connection")
     print(account_id)
     print(quote_balance)

@@ -52,11 +52,14 @@ def manage_trade_exits(client):
     position_market_m1 = position["market_1"]
     position_size_m1 = position["order_m1_size"]
     position_side_m1 = position["order_m1_side"]
+    entry_price_m1=position['base_price']
 
     # Extract position matching information from file - market 2
     position_market_m2 = position["market_2"]
     position_size_m2 = position["order_m2_size"]
     position_side_m2 = position["order_m2_side"]
+    entry_price_m2=position['quote_price']
+
 
     # Protect API
     time.sleep(0.5)
@@ -131,6 +134,7 @@ def manage_trade_exits(client):
       side_m1 = "SELL"
       if position_side_m1 == "SELL":
         side_m1 = "BUY"
+        
 
       # Determine side - m2
       side_m2 = "SELL"
@@ -147,13 +151,23 @@ def manage_trade_exits(client):
       accept_price_m1 = format_number(accept_price_m1, tick_size_m1)
       accept_price_m2 = format_number(accept_price_m2, tick_size_m2)
 
+
+      if position_side_m1== "BUY":
+        profit_m1=price_m1 - entry_price_m1
+      else: 
+        profit_m1=entry_price_m1-price_m1
+
+      if position_side_m2== "BUY":
+        profit_m2=price_m2 - entry_price_m2
+      else: 
+        profit_m2=entry_price_m2-price_m2
       # Close positions
       try:
 
         # Close position for market 1
         print(">>> Closing market 1 <<<")
         print(f"Closing position for {position_market_m1}")
-        send_message(f"Closing position for {position_market_m1}")
+        send_message(f"Closing position for {position_market_m1}, generating {profit_m1}")
 
         close_order_m1 = place_market_order(
           client,
@@ -166,6 +180,7 @@ def manage_trade_exits(client):
 
         print(close_order_m1["order"]["id"])
         print(">>> Closing <<<")
+        
 
         # Protect API
         time.sleep(1)
@@ -173,7 +188,7 @@ def manage_trade_exits(client):
         # Close position for market 2
         print(">>> Closing market 2 <<<")
         print(f"Closing position for {position_market_m2}")
-        send_message(f"Closing position for {position_market_m2}")
+        send_message(f"Closing position for {position_market_m2}, generating {profit_m2}")
 
         close_order_m2 = place_market_order(
           client,

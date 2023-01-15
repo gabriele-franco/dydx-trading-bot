@@ -43,7 +43,7 @@ def place_market_order(client, market, side, size, price, reduce_only):
     position_id=position_id, # required for creating the order signature
     market=market,
     side=side,
-    order_type="MARKET",
+    order_type="LIMIT",
     post_only=False,
     size=size,
     price=price,
@@ -95,7 +95,7 @@ def abort_all_positions(client):
 
       # Get Price
       price = float(position["entryPrice"])
-      accept_price = price * 1.7 if side == "BUY" else price * 0.3
+      accept_price = price * 1.5 if side == "BUY" else price * 0.5
       tick_size = markets["markets"][market]["tickSize"]
       accept_price = format_number(accept_price, tick_size)
 

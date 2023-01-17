@@ -19,7 +19,7 @@ if __name__ == "__main__":
     except Exception as e:
         print(e)
         print("error connecting to client", e)
-        send_message(f'error connecting to client {e}')
+        send_message(f"error connecting to client {e} ")
         exit(1)
 
 if  ABORT_ALL_POSITIONS == True:

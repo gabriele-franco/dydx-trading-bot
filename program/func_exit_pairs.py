@@ -19,6 +19,7 @@ def manage_trade_exits(client):
 
   # Initialize saving output
   save_output = []
+  completed_trades=[]
 
   # Opening JSON file
   try:
@@ -37,6 +38,7 @@ def manage_trade_exits(client):
   markets_live = []
   for p in all_exc_pos:
     markets_live.append(p["market"])
+  print(f"Getting all open positions per trading platform: {markets_live}")
 
   # Protect API
   time.sleep(0.5)
@@ -52,13 +54,13 @@ def manage_trade_exits(client):
     position_market_m1 = position["market_1"]
     position_size_m1 = position["order_m1_size"]
     position_side_m1 = position["order_m1_side"]
-    entry_price_m1=position['base_price']
+    entry_price_m1=float(position['base_price'])
 
     # Extract position matching information from file - market 2
     position_market_m2 = position["market_2"]
     position_size_m2 = position["order_m2_size"]
     position_side_m2 = position["order_m2_side"]
-    entry_price_m2=position['quote_price']
+    entry_price_m2=float(position['quote_price'])
 
 
     # Protect API
@@ -78,6 +80,7 @@ def manage_trade_exits(client):
     order_market_m2 = order_m2.data["order"]["market"]
     order_size_m2 = order_m2.data["order"]["size"]
     order_side_m2 = order_m2.data["order"]["side"]
+    print(f"Getting id of your position: {order_m2.data}")
 
     # Perform matching checks
     check_m1 = position_market_m1 == order_market_m1 and position_size_m1 == order_size_m1 and position_side_m1 == order_side_m1
@@ -98,7 +101,7 @@ def manage_trade_exits(client):
 
     # Get markets for reference of tick size
     markets = client.public.get_markets().data
-
+    print(f"Getting markets for reference of tick size: {markets}")
     # Protect API
     time.sleep(0.2)
 
@@ -150,6 +153,7 @@ def manage_trade_exits(client):
       tick_size_m2 = markets["markets"][position_market_m2]["tickSize"]
       accept_price_m1 = format_number(accept_price_m1, tick_size_m1)
       accept_price_m2 = format_number(accept_price_m2, tick_size_m2)
+      print(f'price acceptable {accept_price_m1}')
 
 
       if position_side_m1== "BUY":
@@ -167,6 +171,7 @@ def manage_trade_exits(client):
         # Close position for market 1
         print(">>> Closing market 1 <<<")
         print(f"Closing position for {position_market_m1}")
+
         send_message(f"Closing position for {position_market_m1}, generating {profit_m1}")
 
         close_order_m1 = place_market_order(
@@ -179,6 +184,7 @@ def manage_trade_exits(client):
         )
 
         print(close_order_m1["order"]["id"])
+        completed_trades.append(profit_m1)
         print(">>> Closing <<<")
         
 
@@ -200,6 +206,7 @@ def manage_trade_exits(client):
         )
 
         print(close_order_m2["order"]["id"])
+        completed_trades.append(profit_m2)
         print(">>> Closing <<<")
 
       except Exception as e:
@@ -215,3 +222,7 @@ def manage_trade_exits(client):
   print(f"{len(save_output)} Items remaining. Saving file...")
   with open("bot_agents.json", "w") as f:
     json.dump(save_output, f)
+
+  # Save historical transactions
+  with open("historical_trades.json", "w") as f:
+    json.dump(completed_trades, f)

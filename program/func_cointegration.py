@@ -76,7 +76,6 @@ def store_cointegration_results(df_market_prices):
           "half_life": half_life,
         })
 
-        print(criteria_met_pairs)
   # Create and save DataFrame
   df_criteria_met = pd.DataFrame(criteria_met_pairs)
   df_criteria_met.to_csv("cointegrated_pairs.csv")

@@ -6,6 +6,7 @@ from func_private import place_market_order
 import json
 import time
 from func_messaging import send_message
+import datetime
 
 from pprint import pprint
 
@@ -216,7 +217,8 @@ def manage_trade_exits(client):
         )
 
         ### salvare l'ordine completato ###
-        posizione= {"market_1":position_market_m1,"profit_1":profit_m1,'order_time_1_pre':order_time_1, "market_2":position_market_m2,"profit_2":profit_m2,'order_time_1_pre':order_time_2}
+        posizione= {"market_1":position_market_m1,"profit_1":profit_m1,'order_time_1_pre':order_time_1, "order_time_1_post": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
+         "market_2":position_market_m2,"profit_2":profit_m2,'order_time_2_pre':order_time_2,"order_time_2_post": datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
         completed_trades.append(posizione)
         print(">>> Closing <<<")
 

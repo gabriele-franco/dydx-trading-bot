@@ -21,6 +21,15 @@ def manage_trade_exits(client):
   save_output = []
   completed_trades=[]
 
+  ############ collect past data from history of orders #########
+  try:
+    storico_file = open("storico.json")
+    storico_dict = json.load(storico_file)
+    for p in storico_dict:
+      storico.append(p)
+  except:
+    storico = []  
+
   # Opening JSON file
   try:
     open_positions_file = open("bot_agents.json")
@@ -55,12 +64,14 @@ def manage_trade_exits(client):
     position_size_m1 = float(position["order_m1_size"])
     position_side_m1 = position["order_m1_side"]
     entry_price_m1=float(position['base_price'])
+    order_time_1=position['order_time_m1']
 
     # Extract position matching information from file - market 2
     position_market_m2 = position["market_2"]
     position_size_m2 = float(position["order_m2_size"])
     position_side_m2 = position["order_m2_side"]
     entry_price_m2=float(position['quote_price'])
+    order_time_2=position['order_time_m2']
 
 
     # Protect API
@@ -207,6 +218,9 @@ def manage_trade_exits(client):
 
         print(close_order_m2["order"]["id"])
         completed_trades.append(profit_m2)
+        ### salvare l'ordine completato ###
+        posizione= {"market_1":position_market_m1,"profit_1":profit_m1,'order_time_1_pre':order_time_1, "market_2":position_market_m2,"profit_2":profit_m2,'order_time_1_pre':order_time_2}
+        completed_trades.append(posizione)
         print(">>> Closing <<<")
 
       except Exception as e:
@@ -217,6 +231,7 @@ def manage_trade_exits(client):
     # Keep record if items and save
     else:
       save_output.append(position)
+    
 
   # Save remaining items
   print(f"{len(save_output)} Items remaining. Saving file...")
@@ -224,5 +239,5 @@ def manage_trade_exits(client):
     json.dump(save_output, f)
 
   # Save historical transactions
-  with open("historical_trades.json", "w") as f:
+  with open("storico.json", "w") as f:
     json.dump(completed_trades, f)

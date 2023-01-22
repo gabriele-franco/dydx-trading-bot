@@ -131,7 +131,7 @@ def manage_trade_exits(client):
     ###
 
     # Close positions if triggered
-    if is_close:
+    if not is_close:
 
       # Determine side - m1
       side_m1 = "SELL"
@@ -157,14 +157,14 @@ def manage_trade_exits(client):
 
 
       if position_side_m1== "BUY":
-        profit_m1=price_m1 - entry_price_m1
+        profit_m1=(price_m1 - entry_price_m1)*float(tick_size_m1)
       else: 
-        profit_m1=entry_price_m1-price_m1
+        profit_m1=(entry_price_m1-price_m1)*float(tick_size_m1)
 
       if position_side_m2== "BUY":
-        profit_m2=price_m2 - entry_price_m2
+        profit_m2=(price_m2 - entry_price_m2)*float(tick_size_m2)
       else: 
-        profit_m2=entry_price_m2-price_m2
+        profit_m2=(entry_price_m2-price_m2)*float(tick_size_m2)
       # Close positions
       try:
 

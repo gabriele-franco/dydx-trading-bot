@@ -9,6 +9,8 @@ import json
 
 from pprint import pprint
 
+from func_messaging import send_message
+
 
 # Open positions
 def open_positions(client):
@@ -106,6 +108,7 @@ def open_positions(client):
 
             # Guard: Ensure collateral
             if free_collateral < USD_MIN_COLLATERAL:
+              send_message('too little USD collateral')
               break
 
                         # create bot agent 

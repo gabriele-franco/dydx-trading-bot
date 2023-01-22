@@ -194,7 +194,6 @@ def manage_trade_exits(client):
           reduce_only=True,
         )
 
-        print(close_order_m1["order"]["id"])
         completed_trades.append(profit_m1)
         print(">>> Closing <<<")
         
@@ -216,8 +215,6 @@ def manage_trade_exits(client):
           reduce_only=True,
         )
 
-        print(close_order_m2["order"]["id"])
-        completed_trades.append(profit_m2)
         ### salvare l'ordine completato ###
         posizione= {"market_1":position_market_m1,"profit_1":profit_m1,'order_time_1_pre':order_time_1, "market_2":position_market_m2,"profit_2":profit_m2,'order_time_1_pre':order_time_2}
         completed_trades.append(posizione)

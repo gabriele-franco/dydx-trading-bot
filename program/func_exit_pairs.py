@@ -52,13 +52,13 @@ def manage_trade_exits(client):
 
     # Extract position matching information from file - market 1
     position_market_m1 = position["market_1"]
-    position_size_m1 = position["order_m1_size"]
+    position_size_m1 = float(position["order_m1_size"])
     position_side_m1 = position["order_m1_side"]
     entry_price_m1=float(position['base_price'])
 
     # Extract position matching information from file - market 2
     position_market_m2 = position["market_2"]
-    position_size_m2 = position["order_m2_size"]
+    position_size_m2 = float(position["order_m2_size"])
     position_side_m2 = position["order_m2_side"]
     entry_price_m2=float(position['quote_price'])
 
@@ -69,7 +69,7 @@ def manage_trade_exits(client):
     # Get order info m1 per exchange
     order_m1 = client.private.get_order_by_id(position["order_id_m1"])
     order_market_m1 = order_m1.data["order"]["market"]
-    order_size_m1 = order_m1.data["order"]["size"]
+    order_size_m1 = float(order_m1.data["order"]["size"])
     order_side_m1 = order_m1.data["order"]["side"]
 
     # Protect API
@@ -78,7 +78,7 @@ def manage_trade_exits(client):
     # Get order info m2 per exchange
     order_m2 = client.private.get_order_by_id(position["order_id_m2"])
     order_market_m2 = order_m2.data["order"]["market"]
-    order_size_m2 = order_m2.data["order"]["size"]
+    order_size_m2 = float(order_m2.data["order"]["size"])
     order_side_m2 = order_m2.data["order"]["side"]
     print(f"Getting id of your position: {order_m2.data}")
 
@@ -116,11 +116,11 @@ def manage_trade_exits(client):
         z_score_current = calculate_zscore(spread).values.tolist()[-1]
 
       # Determine trigger
-      z_score_level_check = abs(z_score_current) >= abs(z_score_traded)
+      #z_score_level_check = abs(z_score_current) >= abs(z_score_traded)
       z_score_cross_check = (z_score_current < 0 and z_score_traded > 0) or (z_score_current > 0 and z_score_traded < 0)
 
       # Close trade
-      if z_score_level_check and z_score_cross_check:
+      if  z_score_cross_check: #z_score_level_check and
 
         # Initiate close trigger
         is_close = True
@@ -131,7 +131,7 @@ def manage_trade_exits(client):
     ###
 
     # Close positions if triggered
-    if not is_close:
+    if is_close:
 
       # Determine side - m1
       side_m1 = "SELL"

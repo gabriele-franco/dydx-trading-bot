@@ -223,8 +223,8 @@ def manage_trade_exits(client):
         print(">>> Closing <<<")
 
       except Exception as e:
-        print(f"Exit failed for {position_market_m1} with {position_market_m2}")
-        send_message(f"Exit failed for {position_market_m1} with {position_market_m2}")
+        print(f"Exit failed for {position_market_m1} with {position_market_m2}, {e}")
+        send_message(f"Exit failed for {position_market_m1} with {position_market_m2}, {e}")
         save_output.append(position)
 
     # Keep record if items and save

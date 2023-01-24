@@ -116,11 +116,11 @@ def manage_trade_exits(client):
         z_score_current = calculate_zscore(spread).values.tolist()[-1]
 
       # Determine trigger
-      z_score_level_check = abs(z_score_current) >= abs(z_score_traded)
+      #z_score_level_check = abs(z_score_current) >= abs(z_score_traded)
       z_score_cross_check = (z_score_current < 0 and z_score_traded > 0) or (z_score_current > 0 and z_score_traded < 0)
 
       # Close trade
-      if z_score_level_check and z_score_cross_check:
+      if z_score_cross_check:# z_score_level_check and 
 
         # Initiate close trigger
         is_close = True

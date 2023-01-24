@@ -34,7 +34,7 @@ def place_market_order(client, market, side, size, price, reduce_only):
   # Get Position Id
   account_response = client.private.get_account()
   position_id = account_response.data["account"]["positionId"]
-
+  print('size place_market_order',size)
   # Get expiration time
   server_time = client.public.get_time()
   expiration = datetime.fromisoformat(server_time.data["iso"].replace("Z", "")) + timedelta(seconds=50000)
@@ -53,7 +53,7 @@ def place_market_order(client, market, side, size, price, reduce_only):
     reduce_only=reduce_only
   )
 
-  # print(placed_order.data)
+  #print(f'placed order {placed_order.data}')
 
   # Return result
   return placed_order.data

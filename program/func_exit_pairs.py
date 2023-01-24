@@ -6,7 +6,6 @@ from func_private import place_market_order
 import json
 import time
 from func_messaging import send_message
-import datetime
 
 from pprint import pprint
 
@@ -21,15 +20,6 @@ def manage_trade_exits(client):
   # Initialize saving output
   save_output = []
   completed_trades=[]
-
-  ############ collect past data from history of orders #########
-  try:
-    storico_file = open("storico.json")
-    storico_dict = json.load(storico_file)
-    for p in storico_dict:
-      storico.append(p)
-  except:
-    storico = []  
 
   # Opening JSON file
   try:
@@ -65,14 +55,12 @@ def manage_trade_exits(client):
     position_size_m1 = position["order_m1_size"]
     position_side_m1 = position["order_m1_side"]
     entry_price_m1=float(position['base_price'])
-    order_time_1=position['order_time_m1']
 
     # Extract position matching information from file - market 2
     position_market_m2 = position["market_2"]
     position_size_m2 = position["order_m2_size"]
     position_side_m2 = position["order_m2_side"]
     entry_price_m2=float(position['quote_price'])
-    order_time_2=position['order_time_m2']
 
 
     # Protect API
@@ -90,7 +78,7 @@ def manage_trade_exits(client):
     # Get order info m2 per exchange
     order_m2 = client.private.get_order_by_id(position["order_id_m2"])
     order_market_m2 = order_m2.data["order"]["market"]
-    order_size_m2 = float(order_m2.data["order"]["size"])
+    order_size_m2 = order_m2.data["order"]["size"]
     order_side_m2 = order_m2.data["order"]["side"]
     print(f"Getting id of your position: {order_m2.data}")
 
@@ -128,11 +116,11 @@ def manage_trade_exits(client):
         z_score_current = calculate_zscore(spread).values.tolist()[-1]
 
       # Determine trigger
-      #z_score_level_check = abs(z_score_current) >= abs(z_score_traded)
+      z_score_level_check = abs(z_score_current) >= abs(z_score_traded)
       z_score_cross_check = (z_score_current < 0 and z_score_traded > 0) or (z_score_current > 0 and z_score_traded < 0)
 
       # Close trade
-      if  z_score_cross_check: #z_score_level_check and
+      if z_score_level_check and z_score_cross_check:
 
         # Initiate close trigger
         is_close = True
@@ -143,7 +131,7 @@ def manage_trade_exits(client):
     ###
 
     # Close positions if triggered
-    if not is_close:
+    if is_close:
 
       # Determine side - m1
       side_m1 = "SELL"
@@ -185,7 +173,6 @@ def manage_trade_exits(client):
         print(f"Closing position for {position_market_m1}")
 
         send_message(f"Closing position for {position_market_m1}, generating {profit_m1}")
-        print('size func_exit 1',side_m1)
 
         close_order_m1 = place_market_order(
           client,
@@ -196,6 +183,7 @@ def manage_trade_exits(client):
           reduce_only=True,
         )
 
+        print(close_order_m1["order"]["id"])
         completed_trades.append(profit_m1)
         print(">>> Closing <<<")
         
@@ -217,21 +205,18 @@ def manage_trade_exits(client):
           reduce_only=True,
         )
 
-        ### salvare l'ordine completato ###
-        posizione= {"market_1":position_market_m1,"profit_1":profit_m1,'order_time_1_pre':order_time_1, "order_time_1_post": datetime.now().strftime("%d/%m/%Y %H:%M:%S"),
-         "market_2":position_market_m2,"profit_2":profit_m2,'order_time_2_pre':order_time_2,"order_time_2_post": datetime.now().strftime("%d/%m/%Y %H:%M:%S")}
-        completed_trades.append(posizione)
+        print(close_order_m2["order"]["id"])
+        completed_trades.append(profit_m2)
         print(">>> Closing <<<")
 
       except Exception as e:
-        print(f"Exit failed for {position_market_m1} with {position_market_m2}, {e}")
-        send_message(f"Exit failed for {position_market_m1} with {position_market_m2}, {e}")
+        print(f"Exit failed for {position_market_m1} with {position_market_m2}")
+        send_message(f"Exit failed for {position_market_m1} with {position_market_m2}")
         save_output.append(position)
 
     # Keep record if items and save
     else:
       save_output.append(position)
-    
 
   # Save remaining items
   print(f"{len(save_output)} Items remaining. Saving file...")
@@ -239,5 +224,5 @@ def manage_trade_exits(client):
     json.dump(save_output, f)
 
   # Save historical transactions
-  with open("storico.json", "w") as f:
+  with open("historical_trades.json", "w") as f:
     json.dump(completed_trades, f)

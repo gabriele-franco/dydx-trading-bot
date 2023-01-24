@@ -62,14 +62,14 @@ def manage_trade_exits(client):
 
     # Extract position matching information from file - market 1
     position_market_m1 = position["market_1"]
-    position_size_m1 = float(position["order_m1_size"])
+    position_size_m1 = position["order_m1_size"]
     position_side_m1 = position["order_m1_side"]
     entry_price_m1=float(position['base_price'])
     order_time_1=position['order_time_m1']
 
     # Extract position matching information from file - market 2
     position_market_m2 = position["market_2"]
-    position_size_m2 = float(position["order_m2_size"])
+    position_size_m2 = position["order_m2_size"]
     position_side_m2 = position["order_m2_side"]
     entry_price_m2=float(position['quote_price'])
     order_time_2=position['order_time_m2']
@@ -81,7 +81,7 @@ def manage_trade_exits(client):
     # Get order info m1 per exchange
     order_m1 = client.private.get_order_by_id(position["order_id_m1"])
     order_market_m1 = order_m1.data["order"]["market"]
-    order_size_m1 = float(order_m1.data["order"]["size"])
+    order_size_m1 = order_m1.data["order"]["size"]
     order_side_m1 = order_m1.data["order"]["side"]
 
     # Protect API
@@ -143,7 +143,7 @@ def manage_trade_exits(client):
     ###
 
     # Close positions if triggered
-    if is_close:
+    if not is_close:
 
       # Determine side - m1
       side_m1 = "SELL"
@@ -185,6 +185,7 @@ def manage_trade_exits(client):
         print(f"Closing position for {position_market_m1}")
 
         send_message(f"Closing position for {position_market_m1}, generating {profit_m1}")
+        print('size func_exit 1',side_m1)
 
         close_order_m1 = place_market_order(
           client,

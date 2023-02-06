@@ -144,4 +144,3 @@ yarl==1.8.2
 yfinance==0.2.4
 zipp==3.11.0
 zope.interface==5.5.2
-streamlit==1.17.0

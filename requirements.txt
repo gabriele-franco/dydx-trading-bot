@@ -49,7 +49,6 @@ GitPython==3.1.30
 hexbytes==0.3.0
 html5lib==1.1
 idna==3.4
-importlib-metadata==6.0.0
 ipfshttpclient==0.8.0a2
 ipykernel==6.20.1
 ipython==8.8.0
@@ -122,7 +121,6 @@ smmap==5.0.0
 soupsieve==2.3.2.post1
 stack-data==0.6.2
 statsmodels==0.13.5
-streamlit==1.17.0
 sympy==1.6
 tabulate==0.9.0
 toml==0.10.2
@@ -146,3 +144,4 @@ yarl==1.8.2
 yfinance==0.2.4
 zipp==3.11.0
 zope.interface==5.5.2
+streamlit==1.17.0

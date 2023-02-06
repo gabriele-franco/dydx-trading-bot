@@ -1,44 +1,52 @@
 from datetime import datetime, timedelta
-#from turtle import position
-import time
-#from pprint import pprint
-
-from numpy import place
 from func_utils import format_number
+import time
+import json
 
-def check_order_status(client, order_id):
-    order=client.private.get_order_by_id(order_id)
-    if order.data:
-        if 'data' in order.data.keys():
-            return order.data['order']['status']
-
-    return "FAILED"
+from pprint import pprint
 
 
+# Get existing open positions
 def is_open_positions(client, market):
-    time.sleep(0.2)
-    all_positions=client.private.get_positions(
-        market=market,
-        status='OPEN'
-    )
-    if len(all_positions.data['positions'])>0:
-        return True
 
-    else:
-        return False
+  # Protect API
+  time.sleep(0.2)
+
+  # Get positions
+  all_positions = client.private.get_positions(
+    market=market,
+    status="OPEN"
+  )
+
+  # Determine if open
+  if len(all_positions.data["positions"]) > 0:
+    return True
+  else:
+    return False
 
 
-#place market order
+# Check order status
+def check_order_status(client, order_id):
+  order = client.private.get_order_by_id(order_id)
+  if order.data:
+    if "order" in order.data.keys():
+      return order.data["order"]["status"]
+  return "FAILED"
+
+
 # Place market order
 def place_market_order(client, market, side, size, price, reduce_only):
   # Get Position Id
   account_response = client.private.get_account()
   position_id = account_response.data["account"]["positionId"]
-  print('size place_market_order',size)
+  
   # Get expiration time
   server_time = client.public.get_time()
-  expiration = datetime.fromisoformat(server_time.data["iso"].replace("Z", "")) + timedelta(seconds=50000)
+  expiration = datetime.fromisoformat(server_time.data["iso"].replace("Z", "")) + timedelta(seconds=120)
   # Place an order
+  expiration_epoch_seconds=expiration.timestamp()
+  
+  
   placed_order = client.private.create_order(
     position_id=position_id, # required for creating the order signature
     market=market,
@@ -48,12 +56,10 @@ def place_market_order(client, market, side, size, price, reduce_only):
     size=size,
     price=price,
     limit_fee='0.015',
-    expiration_epoch_seconds=expiration.timestamp(),
+    expiration_epoch_seconds=time.time() + 120,
     time_in_force="FOK", 
     reduce_only=reduce_only
   )
-
-  #print(f'placed order {placed_order.data}')
 
   # Return result
   return placed_order.data
@@ -95,7 +101,7 @@ def abort_all_positions(client):
 
       # Get Price
       price = float(position["entryPrice"])
-      accept_price = price * 1.5 if side == "BUY" else price * 0.5
+      accept_price = price * 1.7 if side == "BUY" else price * 0.3
       tick_size = markets["markets"][market]["tickSize"]
       accept_price = format_number(accept_price, tick_size)
 
@@ -114,4 +120,11 @@ def abort_all_positions(client):
 
       # Protect API
       time.sleep(0.2)
+
+    # Override json file with empty list
+    bot_agents = []
+    with open("bot_agents.json", "w") as f:
+      json.dump(bot_agents, f)
+
+    # Return closed orders
     return close_orders

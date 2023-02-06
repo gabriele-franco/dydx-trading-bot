@@ -1,45 +1,41 @@
-from fileinput import close
-from func_utils import get_ISO_times
-from pprint import pprint
-import pandas as pd 
-import numpy as np
 from constants import RESOLUTION
-import time 
+from func_utils import get_ISO_times
+import pandas as pd
+import numpy as np
+import time
+
+from pprint import pprint
+
+# Get relevant time periods for ISO from and to
+ISO_TIMES = get_ISO_times()
 
 
-#get relevant time periods
-
-ISO_TIMES=get_ISO_times()
-
-#get candles recent
+# Get Candles recent
 def get_candles_recent(client, market):
 
-  #define output
-  close_prices=[]
+  # Define output
+  close_prices = []
 
+  # Protect API
   time.sleep(0.2)
 
-  candles=client.public.get_candles(
-    market=market,
+  # Get data
+  candles = client.public.get_candles(
+    market= market,
     resolution=RESOLUTION,
     limit=100
   )
-  for candle in candles.data['candles']:
 
+  # Structure data
+  for candle in candles.data["candles"]:
     close_prices.append(candle["close"])
 
+  # Construct and return close price series
   close_prices.reverse()
-
   prices_result = np.array(close_prices).astype(np.float)
-
   return prices_result
 
 
-
-
-
-
-#get candle data
 # Get Candles Historical
 def get_candles_historical(client, market):
 
@@ -48,7 +44,7 @@ def get_candles_historical(client, market):
 
   # Extract historical price data for each timeframe
   for timeframe in ISO_TIMES.keys():
-
+   
     # Confirm times needed
     tf_obj = ISO_TIMES[timeframe]
     from_iso = tf_obj["from_iso"]
@@ -65,16 +61,16 @@ def get_candles_historical(client, market):
       to_iso=to_iso,
       limit=100
     )
-    #print('candele',dir(candles.data.keys()))
 
     # Structure data
     for candle in candles.data["candles"]:
- 
       close_prices.append({"datetime": candle["startedAt"], market: candle["close"] })
 
   # Construct and return DataFrame
   close_prices.reverse()
+ 
   return close_prices
+
 
 # Construct market prices
 def construct_market_prices(client):
@@ -109,6 +105,6 @@ def construct_market_prices(client):
     print("Dropping columns: ")
     print(nans)
     df.drop(columns=nans, inplace=True)
-  print(df)
+
   # Return result
   return df

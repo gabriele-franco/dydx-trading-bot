@@ -6,7 +6,7 @@ from func_private import place_market_order
 import json
 import time
 from datetime import datetime
-
+from func_messaging import send_message
 from pprint import pprint
 
 # Manage trade exits
@@ -27,6 +27,7 @@ def manage_trade_exits(client):
     open_positions_dict = json.load(open_positions_file)
   except:
     print("file JSON bot_agents.json non trovato o in errore (func exit)...")
+    send_message("file JSON bot_agents.json non trovato o in errore (func exit)...")
     time.sleep(1)
     return "complete"
 
@@ -37,11 +38,15 @@ def manage_trade_exits(client):
       storico.append(sto)
   except:
     print("file JSON storico.json non trovato o in errore (func exit)...")
+    send_message("file JSON storico.json non trovato o in errore (func exit)...")
+
     storico = []  
   
   # Guard: Exit if no open positions in file
   if len(open_positions_dict) < 1:
     print("JSON vuoto nessun trade da gestire ...")
+    send_message("JSON vuoto nessun trade da gestire ...")
+
     time.sleep(1)
     return "complete"
   time.sleep(3)
@@ -114,6 +119,8 @@ def manage_trade_exits(client):
     # Guard: If not all match exit with error
     if not check_m1 or not check_m2 or not check_live:
       print(f"Warning: Not all open positions match exchange records for {position_market_m1} and {position_market_m2}")
+      send_message(f"Warning: Not all open positions match exchange records for {position_market_m1} and {position_market_m2}")
+
       continue
 
     # Get prices
@@ -140,6 +147,9 @@ def manage_trade_exits(client):
         print("------------------------------------------------------------------------------------------")
         print("position_market_m1 :",position_market_m1,"position_market_m2: ",position_market_m2)
         print("z_score_current :",z_score_current,"z_score_traded: ",z_score_traded)
+        send_message("------------------------------------------------------------------------------------------")
+        send_message("position_market_m1 :",position_market_m1,"position_market_m2: ",position_market_m2)
+        send_message("z_score_current :",z_score_current,"z_score_traded: ",z_score_traded)
 
 
       # Determine trigger
@@ -194,6 +204,7 @@ def manage_trade_exits(client):
         print(">>> Closing market 1 <<<")
         print(f"Closing position for {position_market_m1}")
 
+
         close_order_m1 = place_market_order(
           client,
           market=position_market_m1,
@@ -205,6 +216,7 @@ def manage_trade_exits(client):
 
         print(close_order_m1["order"]["id"])
         print(">>> Closing <<<")
+        send_message('position closed for {position_market_m1}')
 
         # Protect API
         time.sleep(1)
@@ -224,6 +236,8 @@ def manage_trade_exits(client):
 
         print(close_order_m2["order"]["id"])
         print(">>> Closing <<<")
+        send_message('position closed for {position_market_m2}')
+
         #################################################
         # AGGIUNTA IN FILE STORICO ORDINI DELLA CHIUSURA DELLA COPPIA DI ORDINI
         # OPPURE TUTTO L'ORDINE (APERTURA E CHIUSURA VISTO CHE QUI HO TUTTI I DATI FORSE)

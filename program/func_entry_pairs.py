@@ -8,7 +8,7 @@ from func_private import is_open_positions
 from func_bot_agent import BotAgent
 import pandas as pd
 import json
-
+from func_messaging import send_message
 from pprint import pprint
 
 
@@ -205,9 +205,12 @@ def open_positions(client):
               # Append to list of bot agents
               bot_agents.append(bot_open_dict)
               print("Ok - trade aperto on dydx - aggiorno anche json")
+              send_message("Ok - trade aperto on dydx - aggiorno anche json")
+              
               if len(bot_agents) > 0:
                 with open("bot_agents.json", "w") as f:json.dump(bot_agents, f)
               # Confirm live status in print
+              send_message("Trade status: Live")
               print("Trade status: Live")
               print("---")
               ##################################################################
@@ -219,5 +222,7 @@ def open_positions(client):
 
   # Save agents
   print(f"Success: Manage open trades checked- aggiornamento di fine ciclo json")
+  send_message(f"Success: Manage open trades checked- aggiornamento di fine ciclo json")
+
   del bot_agents
   del storico  

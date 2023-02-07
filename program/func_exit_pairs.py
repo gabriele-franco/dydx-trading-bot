@@ -149,7 +149,7 @@ def manage_trade_exits(client):
         print("z_score_current :",z_score_current,"z_score_traded: ",z_score_traded)
         send_message("------------------------------------------------------------------------------------------")
         send_message(f"position_market_m1 :{position_market_m1},position_market_m2: {position_market_m2}")
-        send_message("z_score_current :{z_score_current} z_score_traded: {z_score_traded}")
+        send_message(f"z_score_current : {z_score_current} z_score_traded: {z_score_traded}")
 
 
       # Determine trigger

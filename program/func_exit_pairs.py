@@ -77,6 +77,7 @@ def manage_trade_exits(client):
     position_side_m1 = position["order_m1_side"]
     position_order_id_m1=position["order_id_m1"]
 
+
     # Extract position matching information from file - market 2
     position_market_m2 = position["market_2"]
     position_size_m2_n = float(position["order_m2_size"])
@@ -144,6 +145,9 @@ def manage_trade_exits(client):
       if len(series_1) > 0 and len(series_1) == len(series_2):
         spread = series_1 - (hedge_ratio * series_2)
         z_score_current = calculate_zscore(spread).values.tolist()[-1]
+        current_price_m1=series_1[-1]
+        current_price_m2=series_2[-1]
+
         print("------------------------------------------------------------------------------------------")
         print("position_market_m1 :",position_market_m1,"position_market_m2: ",position_market_m2)
         print("z_score_current :",z_score_current,"z_score_traded: ",z_score_traded)
@@ -154,12 +158,12 @@ def manage_trade_exits(client):
 
       # Determine trigger
     
-      z_score_level_check = abs(z_score_current) >= abs(ZSCORE_THRESH)###ORIGINALE abs(z_scoretraded)
+      #z_score_level_check = abs(z_score_current) >= abs(ZSCORE_THRESH)###ORIGINALE abs(z_scoretraded)
       z_score_cross_check = (z_score_current < 0 and z_score_traded > 0) or (z_score_current > 0 and z_score_traded < 0)
 
       is_close= False
       # Close trade
-      if z_score_level_check and z_score_cross_check:
+      if  z_score_cross_check:#z_score_level_check and
 
         # Initiate close trigger
         is_close = True

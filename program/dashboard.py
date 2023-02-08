@@ -8,8 +8,8 @@ storico['profit']=storico['base_tot']+storico['quote_tot']
 total_profit=storico['profit'].sum()
 open_positions=len(bot_agent['pair_status'])*2
 
-st.title('total profit is {total_profit}')
-st.title('the number of live orders is {open_positions}')
+st.title(f'total profit is {total_profit}')
+st.title(f'the number of live orders is {open_positions}')
 st.write('this is the storico ordini')
 st.dataframe(storico)
 

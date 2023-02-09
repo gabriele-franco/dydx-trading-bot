@@ -8,7 +8,7 @@ MODE = "DEVELOPMENT"
 # DEVELOPMENT O PRODUCTION
 
 # base and quote originali o invertite
-VERSO_CONTRARIO = 1
+VERSO_CONTRARIO = 0
 
 # Close all open positions and orders
 ABORT_ALL_POSITIONS = 0

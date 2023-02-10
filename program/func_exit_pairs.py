@@ -158,12 +158,12 @@ def manage_trade_exits(client):
 
       # Determine trigger
     
-      #z_score_level_check = abs(z_score_current) >= abs(ZSCORE_THRESH)###ORIGINALE abs(z_scoretraded)
+      z_score_level_check = abs(z_score_current) >= abs(ZSCORE_THRESH)###ORIGINALE abs(z_scoretraded)
       z_score_cross_check = (z_score_current < 0 and z_score_traded > 0) or (z_score_current > 0 and z_score_traded < 0)
 
       is_close= False
       # Close trade
-      if  z_score_cross_check:#z_score_level_check and
+      if z_score_level_check and z_score_cross_check:
 
         # Initiate close trigger
         is_close = True
@@ -220,7 +220,7 @@ def manage_trade_exits(client):
 
         print(close_order_m1["order"]["id"])
         print(">>> Closing <<<")
-        send_message('position closed for {position_market_m1}')
+        send_message(f'position closed for {position_market_m1}')
 
         # Protect API
         time.sleep(1)
@@ -240,7 +240,7 @@ def manage_trade_exits(client):
 
         print(close_order_m2["order"]["id"])
         print(">>> Closing <<<")
-        send_message('position closed for {position_market_m2}')
+        send_message(f'position closed for {position_market_m2}')
 
         #################################################
         # AGGIUNTA IN FILE STORICO ORDINI DELLA CHIUSURA DELLA COPPIA DI ORDINI
